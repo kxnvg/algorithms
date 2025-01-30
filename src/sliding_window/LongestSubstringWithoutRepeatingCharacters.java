@@ -27,7 +27,9 @@ s consists of English letters, digits, symbols and spaces.
  */
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class LongestSubstringWithoutRepeatingCharacters {
 
@@ -36,36 +38,24 @@ public class LongestSubstringWithoutRepeatingCharacters {
     }
 
     public static int lengthOfLongestSubstring(String s) {
-        Map<Character, Integer> map = new HashMap<>();
-        int result = 0;
-        int tempCount = 0;
-        int firstIndex = 0;
+        Set<Character> set = new HashSet<>();
+        int maxLength = 0;
+        int left = 0;
 
-        for (int i = 0; i < s.length(); i++) {
-            char ch = s.charAt(i);
+        for (int right = 0; right < s.length(); right++) {
+            char ch = s.charAt(right);
 
-            if (map.containsKey(ch)) {
-                result = Math.max(tempCount, result);
-
-                Integer idx = map.get(ch);
-                int j = idx;
-                while (j >= 0) {
-                    map.remove(j);
-                }
-
-
-                idx++;
-                int skippedChar = idx - firstIndex;
-                tempCount -= skippedChar;
-                map.put(ch, i);
-                tempCount++;
-                firstIndex = idx;
+            if (!set.contains(ch)) {
+                set.add(ch);
+                maxLength = Math.max(maxLength, right - left + 1);
             } else {
-                map.put(ch, i);
-                tempCount++;
-                result = Math.max(tempCount, result);
+                while (set.contains(ch)) {
+                    set.remove(s.charAt(left));
+                    left++;
+                }
+                set.add(ch);
             }
         }
-        return result;
+        return maxLength;
     }
 }
